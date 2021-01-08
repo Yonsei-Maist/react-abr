@@ -1,3 +1,8 @@
+/**
+ *
+ * @author ChanWoo Gwon, Yonsei Univ. Researcher, since 2020.05
+ * @date 2021.01.06
+ */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
@@ -22,7 +27,7 @@ DefaultComponent.propTypes = {
 
 DefaultComponent.defaultProps = {
 	onEventListener: () => {
-		console.log("구현되지않음!!!")
+		console.log("not implement")
 	}
 };
 

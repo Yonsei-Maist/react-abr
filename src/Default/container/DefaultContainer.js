@@ -1,3 +1,8 @@
+/**
+ *
+ * @author ChanWoo Gwon, Yonsei Univ. Researcher, since 2020.05
+ * @date 2021.01.06
+ */
 import React, {Component} from 'react';
 
 import {bindActionCreators} from 'redux';
@@ -6,6 +11,7 @@ import {connect} from 'react-redux';
 import DefaultComponent from '../component/DefaultComponent';
 
 import * as defaultActions from '../store/actions/defaultAction';
+
 class DefaultContainer extends Component {
 	constructor(props) {
 		super(props);
