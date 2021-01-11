@@ -6,8 +6,8 @@
 import 'core-js/es/map';
 import 'core-js/es/set';
 import './index.css';
-import { DefaultApp } from './Default';
+import { DataManagerApp } from './DataManager';
 
 export {
-  DefaultApp
+  DataManagerApp
 }

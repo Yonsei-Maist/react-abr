@@ -197,7 +197,7 @@ module.exports = function (webpackEnv) {
         : paths.appIndexJs,
     output: {
       libraryTarget: 'umd',
-      library: 'ReactDefault',
+      library: 'ReactABRApp',
       // The build folder.
       path: isEnvProduction ? paths.appBuild : undefined,
       // Add /* filename */ comments to generated require()s in the output.

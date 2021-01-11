@@ -12,14 +12,14 @@
 	<script type="text/javascript">
 		$(document).ready(function () {
 
-			if (typeof ReactDefault === 'undefined') {
-				throw new Error('Cannot find ReactDefault')
+			if (typeof ReactABRApp === 'undefined') {
+				throw new Error('Cannot find ReactABRApp')
 			}
 
-			var app = new ReactDefault.DefaultApp();
+			var app = new ReactABRApp.DataManagerApp();
 
 			app.init("root", {
-				APIServer: ""
+				APIServer: "http://localhost:9000/"
 			});
 		});
 	</script>
@@ -28,6 +28,6 @@
 <noscript>
 	You need to enable JavaScript to run this app.
 </noscript>
-<div id="root" class="container"></div>
+<div id="root"></div>
 </body>
 </html>
