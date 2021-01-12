@@ -16,7 +16,12 @@ import { handleActions} from 'redux-actions';
 const initialState = {
         total: 0,
         list: [],
-        valueList: []
+        valueList: [],
+        image: '',
+        imageSize: {
+                height: 0,
+                width: 0
+        }
 };
 
 export default handleActions({

@@ -75,3 +75,12 @@ code {
 .App table {
   table-layout: fixed;
 }
+
+h4,h3,h2,h1 {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.App .table>tbody>tr>td {
+  vertical-align: middle;
+}

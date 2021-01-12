@@ -7,22 +7,27 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactPaginate from 'react-paginate';
-import ReactApexchart from 'react-apexcharts'
+import ReactApexchart from 'react-apexcharts';
+import ReactRegionSelect from 'react-region-select';
+import _ from 'lodash'
+import $ from 'jquery'
 
 class FileViewer extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-            itemPerPage: 10,
-            page: 1
+            itemPerPage: 20,
+            page: 1,
+            imageWidth: 750,
+            showRight: false
         };
 
         this.handleDataList = this.handleDataList.bind(this);
 	}
 
 	render() {
-        console.log(this.props.data)
+        console.log(this.props.dataList)
 		return (
             <div className="row">
                 <div className="page-container col-md-4">
@@ -30,7 +35,7 @@ class FileViewer extends Component {
                         <colgroup>
                             <col style={{"width": "50px"}}/>
                             <col style={{"width": "auto"}}/>
-                            <col style={{"width": "200px"}}/>
+                            <col style={{"width": "100px"}}/>
                             <col style={{"width": "60px"}}/>
                         </colgroup>
                         <thead>
@@ -96,8 +101,33 @@ class FileViewer extends Component {
                 </div>
                 <div className="col-md-8">
                     {
-                        this.props.dataList.length > 0 &&
-                        this.showData()
+                        this.props.dataList && this.props.dataList.length > 0 &&
+                        <div>
+                            <h3>Origin</h3>
+                            {
+                                this.props.image.length > 0 &&
+                                this.showSelectRegion()
+                            }
+                            <h3>Graphs</h3>
+                            <div className="radio-inline">
+                                <input className="form" type="radio" name="leftRight" id="left" checked={!this.state.showRight} onClick={(e) => {this.setState({showRight: false})}}/>
+                                <label className="form" htmlFor="left">left</label>
+                            </div>
+                            <div className="radio-inline">
+                                <input className="form" type="radio" name="leftRight" id="right" onClick={(e) => {this.setState({showRight: true})}}/>
+                                <label className="form" htmlFor="right">right</label>
+                            </div>
+                            {
+                                this.props.dataList.length > 0 &&
+                                this.showData()
+                            }
+                        </div>
+                    }
+                    {
+                        !this.props.dataList &&
+                        <div>
+                            please select item
+                        </div>
                     }
                 </div>
             </div>
@@ -115,20 +145,13 @@ class FileViewer extends Component {
     }
 
     showData() {
-        let dataList = this.props.dataList;
-        let leftSeries = []
-        let rightSeries = []
+        let dataList = _.filter(this.props.dataList, (e) => {return e.char_is_right === (this.state.showRight ? 'Y': 'N')});
+        let series = []
         let initMarker = 6;
         let marker = [];
 
         for (let i =0;i<dataList.length;i++) {
             let dataOne = dataList[i];
-            let series;
-
-            if (dataOne.char_is_right === 'Y')
-                series = rightSeries;
-            else
-                series = leftSeries;
             
             let lineGraph = [];
             for (let x=0;x<dataOne.blob_values.length;x++)
@@ -188,21 +211,117 @@ class FileViewer extends Component {
             }
         };
 
+        let title = this.state.showRight ? 'Right' : 'Left'
+
         return(
             <div>
-                <h4>Left</h4>
-                <ReactApexchart options={options} series={leftSeries} type="line" height={350} />
-                <h4>Right</h4>
-                <ReactApexchart options={options} series={rightSeries} type="line" height={350} />
+                <h4>{title}</h4>
+                <div className="row">
+                    <div className="col-md-6">
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <td>
+                                        선택
+                                    </td>
+                                    <td>
+                                        Decibel
+                                    </td>
+                                    <td>
+                                        5V Peak
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    dataList.map((e, i) => {
+                                        return(
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" name="checkValues"/>
+                                                </td>
+                                                <td>
+                                                    {e.int_decibel || e.int_num || 0}
+                                                </td>
+                                                <td>
+                                                    {e.int_peak || 0}
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+                            </tbody>
+                        </table>
+                        <button className="btn btn-info">합치기</button>
+                    </div>
+                    <div className="col-md-6">
+                        <ReactApexchart options={options} series={series} type="line" height={350} width={350}/>
+                    </div>
+                </div>
             </div>
         )
+    }
+
+    showSelectRegion() {
+        let regions = [];
+
+        let selectOne = _.find(this.props.dataList, (e) => {return e.char_is_right === (this.state.showRight? 'Y': 'N');});
+
+        let addRegions = (dataOne) => {
+            let croped = dataOne.var_crop.split(',');
+            regions.push(this.changeRegionSizeShow({
+                x: parseInt(croped[0]),
+                y: parseInt(croped[2]),
+                width: parseInt(croped[1]) - parseInt(croped[0]),
+                height: parseInt(croped[3]) - parseInt(croped[2]),
+                data: dataOne
+            }));
+        }
+
+        if (selectOne && selectOne.var_crop){
+            addRegions(selectOne);
+        }
+
+        return (
+            <ReactRegionSelect
+                maxRegions={2}
+                regions={regions}
+                onChange={this.onChange}
+                regionRenderer={this.regionRenderer}>
+                    <img src={"data:;base64," + this.props.image} width={this.state.imageWidth + 'px'}/>
+            </ReactRegionSelect>
+        )
+    }
+
+    onChange() {
+
+    }
+
+    regionRenderer() {
+
+    }
+
+    changeRegionSizeShow(regionSize) {
+        regionSize.x = regionSize.x / this.props.imageSize.width * 100;
+        regionSize.width = regionSize.width / this.props.imageSize.width * 100;
+        regionSize.y = regionSize.y / this.props.imageSize.height * 100;
+        regionSize.height = regionSize.height / this.props.imageSize.height * 100;
+        
+        console.log(regionSize)
+        return regionSize
+    }
+
+    changeRegionSizeToSave(regionSize) {
+
     }
 }
 
 FileViewer.propTypes = {
     handleDataList: PropTypes.func.isRequired,
     fileList: PropTypes.array.isRequired,
-    data: PropTypes.object.isRequired
+    dataList: PropTypes.array.isRequired,
+    image: PropTypes.string.isRequired,
+    imageSize: PropTypes.object.isRequired
 };
 
 FileViewer.defaultProps = {

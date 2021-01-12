@@ -59,6 +59,8 @@ class DefaultContainer extends Component {
 								list={this.props.list}
 								total={this.props.total}
 								dataList={this.props.valueList}
+								image={this.props.imageOrigin}
+								imageSize={this.props.imageSize}
 							/>
 						</TabPanel>
 						<TabPanel>
