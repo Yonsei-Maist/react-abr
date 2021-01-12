@@ -9,7 +9,7 @@ ABR manager front app
 
 ## Environment
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).  
 This project is extended version of [Default React App using Saga](https://github.com/KChanwoo/react-default-app.git).
 
 ```
